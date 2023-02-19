@@ -22,3 +22,25 @@ exports.socket= (socket, next)=>{
         }).catch(next)
     })
 }
+//authenticate when we want to update the profile
+exports.authenticated= (req,res, next)=>{
+    //let token = req.headers['authorization']
+    let token = req.headers.authorization
+    
+    //verify the token 
+    jwt.verify(token, process.env.JWT_SECRET,(err,decoded)=>{
+        
+        if(err){
+            
+           // socket.emit('error', createError(401,'auth_error'))
+            return next(createError(401))
+        };
+        //find the user on database
+        User.findById(decoded.id).then((user)=>{
+            
+            if(!user) throw createError(401)
+            req.user = user
+            next()
+        }).catch(next)
+    })
+}

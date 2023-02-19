@@ -2,7 +2,7 @@ import React from 'react';
 import Avatar from 'components/Avatar'; 
 import { Row } from 'reactstrap';
 
-function UserPrifile(props) {
+function UserProfile(props) {
     return (
         <div className={props.open ? 'side-profile open' : 'side-profile'}>
             <Row className='heading'>
@@ -25,4 +25,4 @@ function UserPrifile(props) {
     );
 }
 
-export default UserPrifile;
+export default UserProfile;

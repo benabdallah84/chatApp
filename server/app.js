@@ -20,6 +20,8 @@ app.use(cors({credentials: true, origin: "http://localhost:3000"}))
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/account', require('./routes/account'));
+
 require('./socket-handler')
 
 //Error Middelwares

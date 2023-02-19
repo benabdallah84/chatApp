@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Row, Spinner} from 'reactstrap'
 import Auth from '../Auth'
-import {ContactHeader,Contacts, ChatHeader, Messages, MessageForm,UserProfile} from '../components'
+import {ContactHeader,Contacts, ChatHeader, Messages, MessageForm,UserProfile, EditProfile} from '../components'
 
 import socketIO from 'socket.io-client'
 class Chat extends Component {
@@ -25,10 +25,12 @@ class Chat extends Component {
         // connected: false
         contacts:[],
         contact:{},
-        userProfile: false
+        userProfile: false,
+        profile:false
 
     }
     userProfileToggle=()=>this.setState({userProfile: !this.state.userProfile})
+    profileToggle=()=>this.setState({profile: !this.state.profile})
     //call the socket function after hte loading of the component
     componentDidMount(){
         this.initSocketConnection()
@@ -57,12 +59,29 @@ class Chat extends Component {
             })
         })
         socket.on('new_user', this.onNewUser)
+        socket.on('update_user', this.onUpdateUser)
         socket.on('message', this.onNewMessage)
         socket.on('user_status', this.updateUserState)
         socket.on('typing', this.onTypingMessage)
         this.setState({socket})
     }
+    onUpdateUser = user => {
+        if(this.state.user.id === user.id){
+            this.setState({user})
+            Auth.setUser(user)
+            return;
 
+        }
+        let contacts = this.state.contacts
+        contacts.forEach((element, index)=>{
+            if(element.id === user.id){
+                contacts[index] = user
+                contacts[index].status = element.status
+            }
+        })
+        this.setState({contacts})
+        if(this.state.contact.id === user.id) this.setState({contact: user})
+    }
     onTypingMessage = sender => {
         if(this.state.contact.id !== sender) return;
         this.setState({typing: sender})
@@ -142,7 +161,7 @@ class Chat extends Component {
         return (
             <Row className='h-100'>
                 <div id="contacts-section" className='col-6 col-md-4'>
-                    <ContactHeader/>
+                    <ContactHeader user={this.state.user} toggle={this.profileToggle}/>
                     
                     <Contacts 
                         contacts={this.state.contacts} 
@@ -150,6 +169,7 @@ class Chat extends Component {
                         onChatNavigate={this.onChatNavigate}
                         />
                     <UserProfile contact={this.state.contact} toggle={this.userProfileToggle} open={this.state.userProfile}/>
+                    <EditProfile user={this.state.user} toggle={this.profileToggle} open={this.state.profile}/>
                     
                 </div>
                 <div id="messages-section" className='col-6 col-md-8'>
