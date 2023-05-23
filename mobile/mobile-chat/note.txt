@@ -1,0 +1,2 @@
+expo r -c // to clean the cash in expo < 40
+npx expo start clear // otherwise
