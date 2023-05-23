@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 const cors =require('cors');
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors({credentials: true, origin: "http://localhost:3000"}))
+app.use(cors({credentials: true, origin: "https://chatapp-frontend-i8ib8hm33-benabdallah84.vercel.app"}))
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api/auth', authRouter);
